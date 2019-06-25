@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  node-app-service:
+    build:
+      context: .
+      dockerfile: node-app.docker
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    working_dir: /app
+    container_name: 'node-app-container-dev'
+    volumes:
+      - ../../:/app
+    links:
+      - mongodb-service
+    command: 'nodemon --inspect=0.0.0.0:9229 index.js localhost 3000'
+    hostname: 'node-app-service'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'root'
+      MONGO_INITDB_ROOT_PASSWORD: '1234'
+      MONGO_INITDB_DATABASE: 'qlp_practice'
+      MONGO_DATABASE_PORT: '27017'
+      PORT: '3000'
+
+  mongodb-service:
+    image: mongo:4.0.10-xenial
+    container_name: 'mongo-db-container-dev'
+    ports:
+      - '27017:27017'
+    restart: always
+    volumes:
+      - quick_lang_practice_db_dev:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'root'
+      MONGO_INITDB_ROOT_PASSWORD: '1234'
+      MONGO_INITDB_DATABASE: 'qlp_practice'
+    command: 'mongod --auth'
+
+volumes:
+  quick_lang_practice_db_dev:
