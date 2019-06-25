@@ -17,6 +17,7 @@ services:
     command: 'nodemon --inspect=0.0.0.0:9229 index.js localhost 3000'
     hostname: 'node-app-service'
     environment:
+      APP_ENV: 'dev'
       MONGO_INITDB_ROOT_USERNAME: 'root'
       MONGO_INITDB_ROOT_PASSWORD: '1234'
       MONGO_INITDB_DATABASE: 'qlp_practice'
