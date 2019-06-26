@@ -8,4 +8,6 @@ mongoose.connect(connectionString, {
     dbName: process.env.MONGO_INITDB_DATABASE
 });
 
+mongoose.set('debug', process.env.APP_ENV === 'dev');
+
 module.exports = mongoose;

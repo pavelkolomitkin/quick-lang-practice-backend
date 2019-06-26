@@ -18,6 +18,7 @@ services:
     hostname: 'node-app-service'
     environment:
       APP_ENV: 'dev'
+      APP_SECRET: 'change_it'
       MONGO_INITDB_ROOT_USERNAME: 'root'
       MONGO_INITDB_ROOT_PASSWORD: '1234'
       MONGO_INITDB_DATABASE: 'qlp_practice'
