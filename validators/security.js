@@ -1,6 +1,7 @@
 const RegisterKey = require('../models/registerKey');
 const User = require('../models/user');
 const PasswordRestoreKey = require('../models/passwordRestoreKey');
+const encrypt = require('../helpers/encrypt');
 
 
 module.exports.passwordRepeat = async (value, { req }) => {
@@ -30,15 +31,21 @@ module.exports.uniqueEmail = async (value, { req }) => {
     }
 };
 
-module.exports.credentials = async ([email, password]) => {
+module.exports.credentials = async (email, { req }) => {
 
-    const passwordHash = await encrypt(password);
+    const { password } = req.body;
 
     const user = await User.findOne({
         email: email,
-        password: passwordHash
+        isActive: true
     });
     if (!user)
+    {
+        throw new Error('Bad credentials');
+    }
+
+    const isEqual = await encrypt.compare(password, user.password);
+    if (!isEqual)
     {
         throw new Error('Bad credentials');
     }

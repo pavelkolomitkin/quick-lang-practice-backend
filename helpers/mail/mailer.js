@@ -15,7 +15,7 @@ module.exports.sendRegisterConfirmation = async (registerKey) => {
     return Twig.renderFile( templateDirectory + '/register.html.twig', {
 
         link: linkBaseUrl + '/security/register-confirm/' + registerKey.key,
-        user: registerKey.user
+        user: registerKey.client
 
     }, (error, html) => {
 

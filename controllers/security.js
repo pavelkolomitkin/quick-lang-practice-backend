@@ -12,7 +12,7 @@ module.exports.register = async (req, res) => {
 
     const { email, password, fullName } = req.body;
 
-    const passwordHash = await encrypt(password);
+    const passwordHash = await encrypt.hash(password);
 
     let client = new ClientUser({
         email: email,
@@ -36,13 +36,14 @@ module.exports.register = async (req, res) => {
 
 module.exports.registerConfirm = async (req, res) => {
 
-    const { key } = req.params;
+    const { key } = req.body;
 
     let item = await RegisterKey.findOne({key: key}).populate('client');
 
     item.client.isActive = true;
 
     await item.client.save();
+    await RegisterKey.deleteOne({ _id: item.id });
 
     res.status(200).json({});
 };
@@ -55,7 +56,7 @@ module.exports.login = async (req, res) => {
     const user = await User.findOne({ email: email });
     const token = await getToken(user);
 
-    res.status(200).join({
+    res.status(200).json({
         token: token
     });
 };
@@ -102,12 +103,12 @@ module.exports.restorePassword = async (req, res) => {
     let keyEntity = await PasswordRestoreKey.findOne({ key: key });
     let user = keyEntity.user;
 
-    user.password = await encrypt(password);
+    user.password = await encrypt.hash(password);
     await user.save();
 
     await PasswordRestoreKey.deleteOne({ _id: keyEntity.id });
 
     mailer.sendPasswordRestoredNotify(user);
 
-    res.status(200).json({});;
+    res.status(200).json({});
 };

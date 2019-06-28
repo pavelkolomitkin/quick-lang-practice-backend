@@ -67,7 +67,7 @@ module.exports = (app, router) => {
             .not()
             .isEmpty()
         ,
-        check(['email', 'password'])
+        check('email')
             .custom(credentials)
         ,
 
