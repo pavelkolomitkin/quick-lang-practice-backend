@@ -67,27 +67,20 @@ module.exports.restorePasswordRequest = async (req, res) => {
 
     const user = await User.findOne({ email: email });
 
-    let restoreKey = null;
-
-    try {
-
-        restoreKey = await PasswordRestoreKey.findOne({user: user});
-
-    }
-    catch (error) {
-
+    let restoreKey = await PasswordRestoreKey.findOne({user: user});
+    if (!restoreKey)
+    {
         restoreKey = new PasswordRestoreKey({
             key: generateSecureRandomKey(),
             user: user
         });
 
         restoreKey = await restoreKey.save();
-
     }
 
     await mailer.sendPasswordRestoreLink(restoreKey);
 
-    res.status(200).json({});;
+    res.status(200).json({});
 };
 
 module.exports.validateRestorePasswordKey = (req, res) => {
@@ -100,7 +93,7 @@ module.exports.restorePassword = async (req, res) => {
 
     const { key, password } = req.body;
 
-    let keyEntity = await PasswordRestoreKey.findOne({ key: key });
+    let keyEntity = await PasswordRestoreKey.findOne({ key: key }).populate('user');
     let user = keyEntity.user;
 
     user.password = await encrypt.hash(password);

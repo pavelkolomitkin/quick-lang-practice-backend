@@ -27,7 +27,7 @@ module.exports = (app, router) => {
             .trim()
             .not()
             .isEmpty()
-            .isLength({ min: 6 })
+            .isLength({ min: 6 }).withMessage('Minimum 6 symbols')
         ,
         check('passwordRepeat')
             .trim()
@@ -109,7 +109,7 @@ module.exports = (app, router) => {
             .trim()
             .not()
             .isEmpty()
-            .isLength({ min: 6 })
+            .isLength({ min: 6 }).withMessage('Minimum 6 symbols')
         ,
         check('passwordRepeat')
             .trim()
@@ -118,6 +118,8 @@ module.exports = (app, router) => {
         ,
         check('passwordRepeat')
             .custom(passwordRepeat)
+        ,
+        validationErrorHandler
 
     ], securityControllers.restorePassword);
 
