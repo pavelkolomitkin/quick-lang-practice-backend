@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 
-module.exports = (value, salt = '') => {
+module.exports = (value, salt = 10) => {
 
-    return bcrypt.hash(value, salt + process.env.APP_SECRET);
-
+    return bcrypt.hash(value, salt);
 };

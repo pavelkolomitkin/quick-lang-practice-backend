@@ -4,12 +4,14 @@ const systemErrorHandler = require('./helpers/systemErrorHandler');
 
 const app = express();
 
+const Router = require('express').Router;
+
 require('./appConfig')(app);
 
 mongoose.connection.once('open', () => {
     console.log('Connection to mongo is succeed!');
 
-    require('./routes/index')(app);
+    require('./routes/index')(app, Router);
 
     app.get('/', (req, res) => {
         res.json({

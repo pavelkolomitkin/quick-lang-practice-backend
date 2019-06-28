@@ -1,40 +1,46 @@
 const { check } = require('express-validator');
-const uniqueEmailValidator = require('../validators/uniqueEmail');
-const passwordRepeatValidator = require('../validators/passwordRepeat');
-const registerKeyValidator = require('../validators/registerKey');
+
+const {
+    uniqueEmail,
+    passwordRepeat,
+    registerKey,
+    credentials,
+    emailExists,
+    passwordRestoreKey
+
+} = require('../validators/security');
 const validationErrorHandler = require('../validators/validationErrorHandler');
 
 const securityControllers = require('../controllers/security');
 
 
-module.exports = (app) => {
-
-    const router = app.Router();
+module.exports = (app, router) => {
 
     router.post('/register', [
 
         check('email')
             .trim()
             .isEmail()
-            .custom(uniqueEmailValidator)
+            .custom(uniqueEmail)
         ,
         check('password')
             .trim()
             .not()
             .isEmpty()
+            .isLength({ min: 6 })
         ,
         check('passwordRepeat')
             .trim()
             .not()
             .isEmpty()
-        ,
-        check('passwordRepeat')
-            .custom(passwordRepeatValidator)
+            .custom(passwordRepeat)
         ,
         check('fullName')
             .trim()
             .not()
-            .isEmpty(),
+            .isEmpty()
+            .isLength({ max: 255 })
+        ,
         validationErrorHandler
 
     ], securityControllers.register);
@@ -44,19 +50,76 @@ module.exports = (app) => {
         check('key')
             .not()
             .isEmpty()
-            .custom(registerKeyValidator)
+            .custom(registerKey)
         ,
         validationErrorHandler
 
     ], securityControllers.registerConfirm);
 
-    router.post('/login', securityControllers.login);
+    router.post('/login', [
+        check('email')
+            .trim()
+            .not()
+            .isEmpty()
+        ,
+        check('password')
+            .trim()
+            .not()
+            .isEmpty()
+        ,
+        check(['email', 'password'])
+            .custom(credentials)
+        ,
 
-    router.post('/restore-password-request', securityControllers.restorePasswordRequest);
+        validationErrorHandler
 
-    router.get('/validate-restore-password-key/:key', securityControllers.validateRestorePasswordKey);
+    ], securityControllers.login);
 
-    router.post('/restore-password', securityControllers.restorePassword);
+    router.post('/restore-password-request', [
+        check('email')
+            .not()
+            .isEmpty()
+            .custom(emailExists),
+
+        validationErrorHandler
+
+    ], securityControllers.restorePasswordRequest);
+
+    router.get('/validate-restore-password-key/:key', [
+
+        check('key')
+            .trim()
+            .not()
+            .isEmpty()
+            .custom(passwordRestoreKey)
+        ,
+        validationErrorHandler
+
+    ], securityControllers.validateRestorePasswordKey);
+
+    router.post('/restore-password', [
+
+        check('key')
+            .trim()
+            .not()
+            .isEmpty()
+            .custom(passwordRestoreKey)
+        ,
+        check('password')
+            .trim()
+            .not()
+            .isEmpty()
+            .isLength({ min: 6 })
+        ,
+        check('passwordRepeat')
+            .trim()
+            .not()
+            .isEmpty()
+        ,
+        check('passwordRepeat')
+            .custom(passwordRepeat)
+
+    ], securityControllers.restorePassword);
 
 
     return router;

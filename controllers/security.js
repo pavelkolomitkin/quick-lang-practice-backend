@@ -1,8 +1,11 @@
 const ClientUser = require('../models/client');
+const User = require('../models/user');
 const RegisterKey = require('../models/registerKey');
+const PasswordRestoreKey = require('../models/passwordRestoreKey');
 
 const encrypt = require('../helpers/encrypt');
-const mailer = require('../helpers/mailer');
+const mailer = require('../helpers/mail/mailer');
+const { getToken, generateSecureRandomKey } = require('../helpers/security');
 
 
 module.exports.register = async (req, res) => {
@@ -19,9 +22,16 @@ module.exports.register = async (req, res) => {
 
     client = await client.save();
 
-    await mailer.sendRegisterConfirmation(client);
+    let registerKey = new RegisterKey({
+        key: generateSecureRandomKey(),
+        client: client
+    });
 
-    res.status(201);
+    registerKey = await registerKey.save();
+
+    await mailer.sendRegisterConfirmation(registerKey);
+
+    res.status(201).json({});
 };
 
 module.exports.registerConfirm = async (req, res) => {
@@ -34,24 +44,70 @@ module.exports.registerConfirm = async (req, res) => {
 
     await item.client.save();
 
-    res.status(200);
+    res.status(200).json({});
 };
 
 
-module.exports.login = (req, res) => {
+module.exports.login = async (req, res) => {
 
+    const { email } = req.body;
 
+    const user = await User.findOne({ email: email });
+    const token = await getToken(user);
 
+    res.status(200).join({
+        token: token
+    });
 };
 
-module.exports.restorePasswordRequest = (req, res) => {
+module.exports.restorePasswordRequest = async (req, res) => {
 
+    const { email } = req.body;
+
+    const user = await User.findOne({ email: email });
+
+    let restoreKey = null;
+
+    try {
+
+        restoreKey = await PasswordRestoreKey.findOne({user: user});
+
+    }
+    catch (error) {
+
+        restoreKey = new PasswordRestoreKey({
+            key: generateSecureRandomKey(),
+            user: user
+        });
+
+        restoreKey = await restoreKey.save();
+
+    }
+
+    await mailer.sendPasswordRestoreLink(restoreKey);
+
+    res.status(200).json({});;
 };
 
 module.exports.validateRestorePasswordKey = (req, res) => {
 
+    res.status(200).json({});
+
 };
 
-module.exports.restorePassword = (req, res) => {
+module.exports.restorePassword = async (req, res) => {
 
+    const { key, password } = req.body;
+
+    let keyEntity = await PasswordRestoreKey.findOne({ key: key });
+    let user = keyEntity.user;
+
+    user.password = await encrypt(password);
+    await user.save();
+
+    await PasswordRestoreKey.deleteOne({ _id: keyEntity.id });
+
+    mailer.sendPasswordRestoredNotify(user);
+
+    res.status(200).json({});;
 };
