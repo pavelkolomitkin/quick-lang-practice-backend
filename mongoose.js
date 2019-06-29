@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
+const config = require('./config/mongo');
 
-let connectionString = 'mongodb://'
-    + process.env.MONGO_INITDB_ROOT_USERNAME + ':' + process.env.MONGO_INITDB_ROOT_PASSWORD + '@mongodb-service:' + process.env.MONGO_DATABASE_PORT;
-
-mongoose.connect(connectionString, {
+mongoose.connect(config.connectionString, {
     useNewUrlParser: true,
-    dbName: process.env.MONGO_INITDB_DATABASE
+    dbName: config.databaseName,
+    autoIndex: false
 });
 
 mongoose.set('debug', process.env.APP_ENV === 'dev');

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-dev": "./node_modules/nodemon/bin/nodemon.js ./index.js"
+    "start-dev": "./node_modules/nodemon/bin/nodemon.js ./index.js",
+    "migrate-mongo": "./node_modules/migrate-mongo/bin/migrate-mongo.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
+    "migrate-mongo": "^6.0.0",
     "nodemon": "^1.19.1"
   }
 }

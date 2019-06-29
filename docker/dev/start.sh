@@ -14,3 +14,8 @@ echo -n "Up docker compose..."
 echo -en '\n'
 docker-compose up -d
 
+
+# Up docker compose
+echo -n "Run database migrations..."
+echo -en '\n'
+docker exec node-app-container-dev npm run migrate-mongo up
