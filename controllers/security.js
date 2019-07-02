@@ -67,7 +67,7 @@ module.exports.restorePasswordRequest = async (req, res) => {
 
     const user = await User.findOne({ email: email });
 
-    let restoreKey = await PasswordRestoreKey.findOne({user: user});
+    let restoreKey = await PasswordRestoreKey.findOne({user: user}).populate('user');
     if (!restoreKey)
     {
         restoreKey = new PasswordRestoreKey({

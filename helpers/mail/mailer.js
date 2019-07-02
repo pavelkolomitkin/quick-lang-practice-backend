@@ -33,7 +33,7 @@ module.exports.sendRegisterConfirmation = async (registerKey) => {
 module.exports.sendPasswordRestoreLink = async (passwordRestoreKey) => {
 
     return Twig.renderFile(templateDirectory + '/restore-password.html.twig', {
-        link: linkBaseUrl + '/security/register-confirm/' + passwordRestoreKey.key
+        link: linkBaseUrl + '/security/password-recovery/' + passwordRestoreKey.key
     }, (error, html) => {
 
         if (error)
