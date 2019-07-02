@@ -21,4 +21,8 @@ const UserSchema = new mongoose.Schema({
     }
 );
 
+UserSchema.methods.getRoles = () => {
+    return ['ROLE_USER'];
+};
+
 module.exports = mongoose.model('User', UserSchema);

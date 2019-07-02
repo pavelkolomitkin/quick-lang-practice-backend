@@ -97,7 +97,7 @@ module.exports = (app, router) => {
 
     ], securityControllers.validateRestorePasswordKey);
 
-    router.post('/restore-password', [
+    router.put('/restore-password', [
 
         check('key')
             .trim()

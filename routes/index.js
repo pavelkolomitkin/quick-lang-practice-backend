@@ -5,11 +5,17 @@ module.exports = (app, Router) => {
 
     app.use('/api/security', require('./security')(app, Router()));
 
-    app.use('/api/client', [
+    app.use('/api/profile', [
 
-        userInit,
-        securityGuard
+        userInit
 
-    ] ,require('./client')(app, Router()));
+    ], require('./profile')(app, Router()));
+
+    // app.use('/api/client', [
+    //
+    //     userInit,
+    //     securityGuard
+    //
+    // ] ,require('./client')(app, Router()));
 
 };
