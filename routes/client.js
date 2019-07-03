@@ -21,6 +21,8 @@ module.exports = (app, router) => {
 
     /*==================== PROFILE MANAGEMENT =======================*/
 
+    router.get('/profile/:id', profileControllers.getProfile);
+
     router.put('/about-yourself', [
         check('text')
             .trim()
