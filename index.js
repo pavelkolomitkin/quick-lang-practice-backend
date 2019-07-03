@@ -1,14 +1,32 @@
 const express        = require('express');
-const bodyParser     = require('body-parser');
-const cors           = require('cors');
+const mongoose       = require('./mongoose');
+const systemErrorHandler = require('./helpers/systemErrorHandler');
 
 const app = express();
 
-app.use(cors());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+const Router = require('express').Router;
 
+require('./appConfig')(app);
 
-app.listen(3000, () => {
+mongoose.connection.once('open', () => {
+    console.log('Connection to mongo is succeed!');
 
+    require('./routes/index')(app, Router);
+
+    app.get('/', (req, res) => {
+        res.json({
+            message: 'test'
+        });
+    });
+
+    app.use(systemErrorHandler);
+
+    app.listen(process.env.PORT || 3000, () => {
+        console.log('Star application!');
+    });
+});
+
+mongoose.connection.on('error', (error) => {
+
+    console.error(error);
 });
