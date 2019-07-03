@@ -4,7 +4,5 @@ module.exports = (app, router) => {
 
     router.get('/', profileControllers.getProfile);
 
-
-
     return router;
 };

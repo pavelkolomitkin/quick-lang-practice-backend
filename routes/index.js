@@ -11,11 +11,11 @@ module.exports = (app, Router) => {
 
     ], require('./profile')(app, Router()));
 
-    // app.use('/api/client', [
-    //
-    //     userInit,
-    //     securityGuard
-    //
-    // ] ,require('./client')(app, Router()));
+    app.use('/api/client', [
+
+        userInit,
+        securityGuard
+
+    ] ,require('./client')(app, Router()));
 
 };
