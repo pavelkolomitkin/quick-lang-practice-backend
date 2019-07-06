@@ -87,7 +87,13 @@ module.exports.updateLanguageSkill = async (req, res) => {
     skillEntity.level = languageLevelEntity;
     await skillEntity.save();
 
-    res.status(200).json(skillEntity);
+    res.status(200).json({
+        skill: {
+            id: skillEntity.id,
+            language: skillEntity.language,
+            level: skillEntity.level
+        }
+    });
 };
 
 module.exports.removeLanguageSkill = async (req, res) => {
