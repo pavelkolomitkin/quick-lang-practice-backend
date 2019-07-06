@@ -90,6 +90,22 @@ module.exports = (app, router) => {
     /*==================// PROFILE MANAGEMENT =======================*/
 
 
+    /*==================== READY TO PRACTICE STATUS MANAGEMENT ======*/
+
+    router.put('/practice-skill/on/:id', [
+
+        check('id')
+            .custom(skillBelongsToUser)
+        ,
+
+        validationErrorHandler
+    ], profileControllers.practiceSkillOn);
+
+    router.put('/practice-skill/off', profileControllers.practiceSkillOff);
+
+    /*==================// READY TO PRACTICE STATUS MANAGEMENT ======*/
+
+
     return router;
 };
 

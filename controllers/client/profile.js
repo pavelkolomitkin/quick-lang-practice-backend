@@ -10,7 +10,11 @@ module.exports.getProfile = async (req, res) => {
 
     const { params: { id } } = req;
 
-    const user = await ClientUser.findById(id).populate('skills');
+    const user = await ClientUser
+        .findById(id)
+        .populate('skills')
+        .populate('readyToPracticeSkill')
+    ;
     if (!user)
     {
         res.status(404).json({});
@@ -103,4 +107,36 @@ module.exports.removeLanguageSkill = async (req, res) => {
     await LanguageSkill.deleteOne({_id: id});
 
     res.status(200).json({});
+};
+
+module.exports.practiceSkillOn = async (req, res) => {
+
+    const { params: { id }, user } = req;
+
+    const skill = await LanguageSkill.findById(id);
+
+    user.readyToPracticeSkill = skill;
+
+    await user.save();
+
+    res.status(200).json({
+        skill: {
+            id: skill.id,
+            language: skill.language,
+            level: skill.level
+        }
+    });
+};
+
+module.exports.practiceSkillOff = async (req, res) => {
+
+    const { user } = req;
+
+    user.readyToPracticeSkill = null;
+
+    await user.save();
+
+    res.status(200).json({
+        skill: null
+    });
 };
