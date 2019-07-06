@@ -3,6 +3,8 @@ const securityGuard = require('../middlewares/security/guard');
 
 module.exports = (app, Router) => {
 
+    app.use('/api/common', require('./common')(app, Router()));
+
     app.use('/api/security', require('./security')(app, Router()));
 
     app.use('/api/profile', [

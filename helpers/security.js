@@ -43,6 +43,7 @@ module.exports.getUser = (token) =>
 
             User
                 .findById(data.id)
+                .populate('skills') // TODO: if it's a client it would be populated
                 .then((user) => {
 
                     resolve(user);

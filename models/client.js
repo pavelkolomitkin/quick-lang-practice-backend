@@ -13,14 +13,14 @@ const ClientUserSchema = new mongoose.Schema(
         skills: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'LanguageSkill',
-            autopopulate: true
+            // autopopulate: true
         }],
 
         readyToPracticeSkill: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'LanguageSkill',
             required: false,
-            autopopulate: true
+            //autopopulate: true
         }
     },
     {

@@ -1,4 +1,5 @@
 const mongoose = require('../mongoose');
+const serialization = require('../serialization/entityTransformer');
 
 const LanguageSkillSchema = new mongoose.Schema({
 
@@ -22,7 +23,12 @@ const LanguageSkillSchema = new mongoose.Schema({
         autopopulate: true
     }
 
-});
+},
+    {
+        toJSON: {
+            transform: serialization.languageSkill
+        }
+    });
 
 LanguageSkillSchema.plugin(require('mongoose-autopopulate'));
 

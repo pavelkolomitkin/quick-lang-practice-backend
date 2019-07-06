@@ -36,26 +36,20 @@ module.exports = (app, router) => {
     router.post('/skill', [
 
         check('language')
-            .isNumeric()
-            .custom(
-                (() => {
-                    return (id) => {
-                        return entityExists(Language, id);
-                    };
-                })()
-            )
+            .custom(async (value) => {
+                return entityExists(Language, value, 'Language does not exist!');
+            })
         ,
 
         check('level')
-            .isNumeric()
-            .custom((() => {
-                return (id) => {
-                    return entityExists(LanguageLevel, id);
-                };
-            })())
+            .custom(async (value) => {
+                    return entityExists(LanguageLevel, value, 'Language level does not exist!');
+                })
         ,
 
-        skillDoesNotExist
+        check('language')
+            .custom(skillDoesNotExist)
+            .withMessage('You have already got this skill!')
         ,
 
         validationErrorHandler

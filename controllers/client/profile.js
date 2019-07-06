@@ -10,7 +10,7 @@ module.exports.getProfile = async (req, res) => {
 
     const { params: { id } } = req;
 
-    const user = await ClientUser.findById(id);
+    const user = await ClientUser.findById(id).populate('skills');
     if (!user)
     {
         res.status(404).json({});
@@ -62,8 +62,15 @@ module.exports.addLanguageSkill = async (req, res) => {
 
     await skill.save();
     user.skills.push(skill);
+    await user.save();
 
-    res.status(201).json(skill);
+    res.status(201).json({
+        skill: {
+            id: skill.id,
+            language: skill.language,
+            level: skill.level
+        }
+    });
 };
 
 module.exports.updateLanguageSkill = async (req, res) => {

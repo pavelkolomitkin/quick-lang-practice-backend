@@ -53,6 +53,11 @@ const normalizeDefault = (entity) => {
     ]);
 };
 
+module.exports.defaultTransformer = (doc, ret, opt) => {
+
+    normalizeDefault(ret);
+};
+
 module.exports.clientUser = (doc, ret, opt) => {
 
     normalizeDefault(ret);
@@ -72,5 +77,12 @@ module.exports.clientUser = (doc, ret, opt) => {
         ]);
 
     }
+};
+
+module.exports.languageSkill = (doc, ret, opt) => {
+
+    normalizeDefault(ret);
+    cleanUpProperties(ret, ['user']);
 
 };
+

@@ -1,4 +1,4 @@
-module.exports.skillDoesNotExist = (langId, { req }) => {
+module.exports.skillDoesNotExist = async (langId, { req }) => {
 
     const { user } = req;
 
@@ -18,7 +18,7 @@ module.exports.skillDoesNotExist = (langId, { req }) => {
 
 };
 
-module.exports.skillBelongsToUser = (skillId, { req }) => {
+module.exports.skillBelongsToUser = async (skillId, { req }) => {
 
     const { user } = req;
 
